@@ -1,103 +1,59 @@
-function Green_Light () {
-    range = strip.range(0, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-    range = strip.range(1, 1)
+function green_light () {
+    range = strip.range(0, 3)
     range.showColor(neopixel.colors(NeoPixelColors.Black))
     range = strip.range(2, 1)
     range.showColor(neopixel.colors(NeoPixelColors.Green))
 }
+function countdown (sound_: boolean, walk: boolean) {
+    green_light()
+    if (walk) {
+        basic.showIcon(IconNames.StickFigure)
+        for (let index2 = 0; index2 <= 20; index2++) {
+            basic.showNumber(20 - index2)
+            if (sound_) {
+                music.playTone(440, music.beat(BeatFraction.Whole))
+            }
+        }
+    }
+    yellow_light()
+    basic.pause(3700)
+    if (walk) {
+        basic.showLeds(`
+            . . # # .
+            . . # # #
+            . # # # #
+            . # # # #
+            . # # # .
+            `)
+    }
+    red_light()
+}
 input.onButtonPressed(Button.A, function () {
-    basic.showIcon(IconNames.StickFigure)
-    while (true) {
-        for (let index = 0; index <= 20; index++) {
-            Green_Light()
-            basic.showNumber(20 - index)
-        }
-        OFF()
-        yellow()
-        basic.pause(3700)
-        OFF2()
-        basic.showLeds(`
-            . . # # .
-            . . # # #
-            . # # # #
-            . # # # #
-            . # # # .
-            `)
-        Red()
-        basic.pause(20000)
-        off3()
-    }
+    countdown(false, true)
 })
-function OFF2 () {
-    range = strip.range(0, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-    range = strip.range(1, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-    range = strip.range(2, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-}
+input.onButtonPressed(Button.AB, function () {
+    countdown(false, false)
+})
 input.onButtonPressed(Button.B, function () {
-    basic.showIcon(IconNames.StickFigure)
-    while (true) {
-        for (let index = 0; index <= 20; index++) {
-            Green_Light()
-            basic.showNumber(20 - index)
-            music.playTone(440, music.beat(BeatFraction.Whole))
-        }
-        music.playTone(220, music.beat(BeatFraction.Quarter))
-        OFF()
-        yellow()
-        basic.pause(3700)
-        OFF2()
-        basic.showLeds(`
-            . . # # .
-            . . # # #
-            . # # # #
-            . # # # #
-            . # # # .
-            `)
-        Red()
-        basic.pause(20000)
-        off3()
-    }
+    countdown(true, true)
 })
-function off3 () {
+function red_light () {
+    range = strip.range(0, 3)
+    range.showColor(neopixel.colors(NeoPixelColors.Black))
     range = strip.range(0, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-    range = strip.range(1, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-    range = strip.range(2, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
+    range.showColor(neopixel.colors(NeoPixelColors.Red))
 }
-function yellow () {
-    range = strip.range(0, 1)
+function yellow_light () {
+    range = strip.range(0, 3)
     range.showColor(neopixel.colors(NeoPixelColors.Black))
     range = strip.range(1, 1)
     range.showColor(neopixel.colors(NeoPixelColors.Yellow))
-    range = strip.range(2, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
 }
-function OFF () {
-    range = strip.range(0, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-    range = strip.range(1, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-    range = strip.range(2, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-}
-function Red () {
-    range = strip.range(0, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Red))
-    range = strip.range(1, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-    range = strip.range(2, 1)
-    range.showColor(neopixel.colors(NeoPixelColors.Black))
-}
+let distance = 0
 let range: neopixel.Strip = null
 let strip: neopixel.Strip = null
 basic.showIcon(IconNames.Yes)
-strip = neopixel.create(DigitalPin.P16, 3, NeoPixelMode.RGB)
+strip = neopixel.create(DigitalPin.P0, 3, NeoPixelMode.RGB)
 strip.setBrightness(255)
 basic.showLeds(`
     . . # # .
@@ -106,8 +62,15 @@ basic.showLeds(`
     . # # # #
     . # # # .
     `)
-Red()
+red_light()
 basic.forever(function () {
-    pins.digitalWritePin(DigitalPin.P0, 0)
-    control.waitMicros(5)
+    pins.digitalWritePin(DigitalPin.P1, 0)
+    control.waitMicros(2)
+    pins.digitalWritePin(DigitalPin.P1, 0)
+    control.waitMicros(10)
+    pins.digitalWritePin(DigitalPin.P1, 0)
+    distance = pins.pulseIn(DigitalPin.P2, PulseValue.High) / 58
+    if (distance < 0) {
+    	
+    }
 })
