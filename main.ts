@@ -58,7 +58,7 @@ let distance = 0
 let range: neopixel.Strip = null
 let strip: neopixel.Strip = null
 basic.showIcon(IconNames.Yes)
-strip = neopixel.create(DigitalPin.P16, 3, NeoPixelMode.RGB)
+strip = neopixel.create(DigitalPin.P0, 3, NeoPixelMode.RGB)
 strip.setBrightness(255)
 basic.showLeds(`
     . . # # .
@@ -75,8 +75,8 @@ basic.forever(function () {
     pins.digitalWritePin(DigitalPin.P1, 1)
     control.waitMicros(10)
     pins.digitalWritePin(DigitalPin.P1, 0)
-    distance = pins.pulseIn(DigitalPin.P2, PulseValue.High) / 58
-    if (distance == 5) {
+    distance = pins.pulseIn(DigitalPin.P16, PulseValue.High) / 58
+    if (distance < 5) {
         Traffic_countdowmn(false, false)
         basic.showLeds(`
             . . # # .
