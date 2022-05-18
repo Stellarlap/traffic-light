@@ -2,7 +2,7 @@ radio.onReceivedNumber(function (receivedNumber) {
     if (receivedNumber == 0) {
         green_light()
     } else {
-        Traffic_countdowmn(false, false)
+        Traffic_Light_cycle(false, false)
     }
 })
 function green_light () {
@@ -12,9 +12,9 @@ function green_light () {
     range.showColor(neopixel.colors(NeoPixelColors.Green))
 }
 input.onButtonPressed(Button.A, function () {
-    Traffic_countdowmn(false, true)
+    Traffic_Light_cycle(false, true)
 })
-function Traffic_countdowmn (sound_: boolean, walk: boolean) {
+function Traffic_Light_cycle (sound_: boolean, walk: boolean) {
     basic.pause(3000)
     green_light()
     basic.showIcon(IconNames.StickFigure)
@@ -48,10 +48,10 @@ function Traffic_countdowmn (sound_: boolean, walk: boolean) {
     red_light()
 }
 input.onButtonPressed(Button.AB, function () {
-    Traffic_countdowmn(false, false)
+    Traffic_Light_cycle(false, false)
 })
 input.onButtonPressed(Button.B, function () {
-    Traffic_countdowmn(true, true)
+    Traffic_Light_cycle(true, true)
 })
 function red_light () {
     range = strip.range(0, 3)
@@ -86,9 +86,11 @@ basic.forever(function () {
         control.waitMicros(2)
         pins.digitalWritePin(DigitalPin.P1, 1)
         control.waitMicros(10)
-        pins.digitalWritePin(DigitalPin.P1, pins.pulseIn(DigitalPin.P8, PulseValue.High) / 58)
-        if (distance == 5) {
-            Traffic_countdowmn(false, false)
+        pins.digitalWritePin(DigitalPin.P1, 0)
+        distance = pins.pulseIn(DigitalPin.P2, PulseValue.High) / 58
+        if (distance <= 5) {
+            count += 1
+            Traffic_Light_cycle(false, false)
             basic.showLeds(`
                 . . # # .
                 . . # # #
@@ -97,5 +99,8 @@ basic.forever(function () {
                 . # # # .
                 `)
         }
+    }
+    if (count == 10) {
+        Traffic_Light_cycle(false, false)
     }
 })
