@@ -1,3 +1,14 @@
+radio.onReceivedNumber(function (receivedNumber) {
+    if (receivedNumber == 0) {
+        abort_cycle = true
+        green_light()
+    } else if (receivedNumber == 1) {
+        abort_cycle = true
+        red_light()
+    } else {
+        Traffic_Light_cycle(false, false)
+    }
+})
 function green_light () {
     range = strip.range(0, 3)
     range.showColor(neopixel.colors(NeoPixelColors.Black))
@@ -10,10 +21,10 @@ input.onButtonPressed(Button.A, function () {
 function Traffic_Light_cycle (sound_: boolean, walk: boolean) {
     abort_cycle = false
     basic.pause(3000)
+    green_light()
     if (abort_cycle) {
         return
     }
-    green_light()
     if (walk) {
         basic.showIcon(IconNames.StickFigure)
         for (let index2 = 0; index2 <= 20; index2++) {
@@ -62,31 +73,16 @@ function red_light () {
     range = strip.range(0, 1)
     range.showColor(neopixel.colors(NeoPixelColors.Red))
 }
-radio.onReceivedValue(function (name, value) {
-    if (name == me) {
-        if (value == 1) {
-            abort_cycle = true
-            green_light()
-        } else if (value == 2) {
-            abort_cycle = true
-            red_light()
-        } else if (value == 3) {
-            Traffic_Light_cycle(false, false)
-        }
-    }
-})
 function yellow_light () {
     range = strip.range(0, 3)
     range.showColor(neopixel.colors(NeoPixelColors.Black))
     range = strip.range(1, 1)
     range.showColor(neopixel.colors(NeoPixelColors.Yellow))
 }
-let abort_cycle = false
 let range: neopixel.Strip = null
+let abort_cycle = false
 let strip: neopixel.Strip = null
-let me = ""
-me = "Dynes"
-strip = neopixel.create(DigitalPin.P0, 3, NeoPixelMode.RGB)
+strip = neopixel.create(DigitalPin.P16, 3, NeoPixelMode.RGB)
 strip.setBrightness(255)
 basic.showLeds(`
     . . # # .
